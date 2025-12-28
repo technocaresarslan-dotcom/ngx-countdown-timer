@@ -11,6 +11,7 @@ export class CountdownTimer implements OnInit, OnDestroy{
   @Input() end;
   @Output() zeroTrigger;
   @Input() timeOnly;
+  @Input() format;
   timer: any;
   displayTime: any;
   constructor(
@@ -68,9 +69,60 @@ export class CountdownTimer implements OnInit, OnDestroy{
         + this.twoDigit(date_diff.getUTCSeconds());
       } else {
         // Date() takes a UTC timestamp – getHours() gets hours in local time not in UTC. therefore we have to use getUTCHours()
-        return day_string + this.twoDigit(date_diff.getUTCHours()) +
-           ":" + this.twoDigit(date_diff.getUTCMinutes()) + ":" 
-           + this.twoDigit(date_diff.getUTCSeconds());
+        // return day_string + this.twoDigit(date_diff.getUTCHours()) +
+        //    ":" + this.twoDigit(date_diff.getUTCMinutes()) + ":" 
+        //    + this.twoDigit(date_diff.getUTCSeconds());
+
+        const hours = date_diff.getUTCHours();
+        const minutes = date_diff.getUTCMinutes();
+        const seconds = date_diff.getUTCSeconds();
+
+        if (this.format === 'DHMS') {
+          return (
+            (days ? this.twoDigit(days) + 'D ' : '') +
+            this.twoDigit(hours) + 'H ' +
+            this.twoDigit(minutes) + 'M ' +
+            this.twoDigit(seconds) + 'S'
+          );
+        }
+
+        else if (this.format === 'DHM') {
+          return (
+            (days ? this.twoDigit(days) + 'D ' : '') +
+            this.twoDigit(hours) + 'H ' +
+            this.twoDigit(minutes) + 'M ' +
+            this.twoDigit(seconds)
+          );
+        }
+
+        else if (this.format === 'DH') {
+          return (
+            (days ? this.twoDigit(days) + 'D ' : '') +
+            this.twoDigit(hours) + 'H ' +
+            this.twoDigit(minutes) + ' ' +
+            this.twoDigit(seconds)
+          );
+        }
+
+        else if (this.format === 'D') {
+          return (
+            (days ? this.twoDigit(days) + 'D ' : '') +
+            this.twoDigit(hours) + ' ' +
+            this.twoDigit(minutes) + ' ' +
+            this.twoDigit(seconds)
+          );
+        }
+
+
+
+        // default (backward compatible)
+        return (
+          (days ? this.twoDigit(days) + ':' : '') +
+          this.twoDigit(hours) + ':' +
+          this.twoDigit(minutes) + ':' +
+          this.twoDigit(seconds)
+        );
+
 
       }
   }
